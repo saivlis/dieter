@@ -20,13 +20,14 @@
        flatten
        (remove #(.isDirectory %))
        (map (fn [cached]
-              (let [cached (->> cached
+              (let [sep java.io.File/separator
+                    cached (.replace (->> cached
                                 (relative-path (settings/cache-root))
-                                (str "/"))
-                    uncached (->> cached
-                                  (path/uncachify-path))]
+                                (str "/")) sep "/")
+                    uncached (.replace (->> cached
+                                  (path/uncachify-path)) sep "/")]
                 (cache/add-cached-uri uncached cached))))
-       dorun))
+       (dorun)))
 
 (defn find-and-cache-asset [& args]
   (apply (ns-resolve 'dieter.core 'find-and-cache-asset) args))
